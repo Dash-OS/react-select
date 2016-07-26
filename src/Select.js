@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Input from 'react-input-autosize';
 import classNames from 'classnames';
+import Portal from 'react-portal';
 
 import stripDiacritics from './utils/stripDiacritics';
 
@@ -964,14 +965,16 @@ const Select = React.createClass({
 		}
 
 		return (
-			<div ref="menuContainer" className="Select-menu-outer" style={this.props.menuContainerStyle}>
-				<div ref="menu" role="listbox" className="Select-menu" id={this._instancePrefix + '-list'}
-						 style={this.props.menuStyle}
-						 onScroll={this.handleMenuScroll}
-						 onMouseDown={this.handleMouseDownOnMenu}>
-					{menu}
+			<Portal isOpen>
+				<div ref="menuContainer" className="Select-menu-outer" style={this.props.menuContainerStyle}>
+					<div ref="menu" role="listbox" className="Select-menu" id={this._instancePrefix + '-list'}
+							 style={this.props.menuStyle}
+							 onScroll={this.handleMenuScroll}
+							 onMouseDown={this.handleMouseDownOnMenu}>
+						{menu}
+					</div>
 				</div>
-			</div>
+			</Portal>
 		);
 	},
 
