@@ -188,27 +188,27 @@ const Select = React.createClass({
 
 	componentDidUpdate (prevProps, prevState) {
 		// focus to the selected option
-		if (this.refs.menu && this.refs.focused && this.state.isOpen && !this.hasScrolledToOption) {
+		if (this._menuRef && this.refs.focused && this.state.isOpen && !this.hasScrolledToOption) {
 			let focusedOptionNode = ReactDOM.findDOMNode(this.refs.focused);
-			let menuNode = ReactDOM.findDOMNode(this.refs.menu);
+			let menuNode = ReactDOM.findDOMNode(this._menuRef);
 			menuNode.scrollTop = focusedOptionNode.offsetTop;
 			this.hasScrolledToOption = true;
 		} else if (!this.state.isOpen) {
 			this.hasScrolledToOption = false;
 		}
 
-		if (this._scrollToFocusedOptionOnUpdate && this.refs.focused && this.refs.menu) {
+		if (this._scrollToFocusedOptionOnUpdate && this.refs.focused && this._menuRef) {
 			this._scrollToFocusedOptionOnUpdate = false;
 			var focusedDOM = ReactDOM.findDOMNode(this.refs.focused);
-			var menuDOM = ReactDOM.findDOMNode(this.refs.menu);
+			var menuDOM = ReactDOM.findDOMNode(this._menuRef);
 			var focusedRect = focusedDOM.getBoundingClientRect();
 			var menuRect = menuDOM.getBoundingClientRect();
 			if (focusedRect.bottom > menuRect.bottom || focusedRect.top < menuRect.top) {
 				menuDOM.scrollTop = (focusedDOM.offsetTop + focusedDOM.clientHeight - menuDOM.offsetHeight);
 			}
 		}
-		if (this.props.scrollMenuIntoView && this.refs.menuContainer) {
-			this.refs.menuContainer.scrollIntoView()
+		if (this.props.scrollMenuIntoView && this._menuContainerRef) {
+			this._menuContainerRef.scrollIntoView()
 		}
 		if (prevProps.disabled !== this.props.disabled) {
 			this.setState({ isFocused: false }); // eslint-disable-line react/no-did-update-set-state
@@ -363,7 +363,7 @@ const Select = React.createClass({
 
 	handleInputBlur (event) {
 		// The check for menu.contains(activeElement) is necessary to prevent IE11's scrollbar from closing the menu in certain contexts.
-		if (this.refs.menu && (this.refs.menu === document.activeElement || this.refs.menu.contains(document.activeElement))) {
+		if (this._menuRef && (this._menuRef === document.activeElement || this._menuRef.contains(document.activeElement))) {
 			this.focus();
 			return;
 		}
@@ -966,8 +966,8 @@ const Select = React.createClass({
 
 		return (
 			<Portal isOpen>
-				<div ref="menuContainer" className="Select-menu-outer" style={this.props.menuContainerStyle}>
-					<div ref="menu" role="listbox" className="Select-menu" id={this._instancePrefix + '-list'}
+				<div ref={(node) => { this._menuContainerRef = node }} className="Select-menu-outer" style={this.props.menuContainerStyle}>
+					<div ref={(node) => { this._menuRef = node }} role="listbox" className="Select-menu" id={this._instancePrefix + '-list'}
 							 style={this.props.menuStyle}
 							 onScroll={this.handleMenuScroll}
 							 onMouseDown={this.handleMouseDownOnMenu}>
